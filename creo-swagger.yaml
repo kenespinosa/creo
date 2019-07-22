@@ -1,0 +1,209 @@
+swagger: "2.0"
+info:
+  description: "This is a POC for CREO."
+  version: "1.0.0"
+  title: "Creo"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "creo.swagger.io"
+basePath: "/creo"
+tags:
+- name: "platform"
+  description: "Operations about platform provisioning"
+- name: "pipeline"
+  description: "Operations about pipeline provisioning"
+schemes:
+- "http"
+paths:
+  /platform:
+    post:
+      tags:
+      - "platform"
+      summary: "Create platform"
+      description: "This can only be done by the logged in user."
+      operationId: "createPlatform"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created platform"
+        required: true
+        schema:
+          $ref: "#/definitions/Platform"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+  /platform/{id}:
+    get:
+      tags:
+      - "platform"
+      summary: "Get platform"
+      description: ""
+      operationId: "getPlatformById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The platform that needs to be fetched."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Platform"
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "Platform not found"
+  /pipeline:
+    post:
+      tags:
+      - "pipeline"
+      summary: "Create pipeline"
+      description: "This can only be done by the logged in user."
+      operationId: "createPipeline"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created pipeline"
+        required: true
+        schema:
+          $ref: "#/definitions/Pipeline"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApiResponse"
+  /pipeline/{id}:
+    get:
+      tags:
+      - "pipeline"
+      summary: "Get pipeline"
+      description: ""
+      operationId: "getPipelineById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The pipeline that needs to be fetched."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Pipeline"
+        400:
+          description: "Invalid pipelineId supplied"
+        404:
+          description: "Pipeline not found"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://creo.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:creo: "modify creo in your account"
+      read:creo: "read your creo"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Technology:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "int64"
+      technologyName:
+        type: "string"
+  Instance:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "int64"
+      amiTypeId:
+        type: "string"
+  PipelineDetails:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "int64"
+      uploadedProject:
+        type: "string"
+  Platform:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      platformName:
+        type: "string"
+      defaultVpc:
+        type: "string"
+      defaultSubnet:
+        type: "string"
+      cidr:
+        type: "string"
+      instanceType:
+        type: "string"
+      osType:
+        type: "string"
+      storage:
+        type: "string"
+      serverName:
+        type: "string"
+      platformProvider:
+        type: "string"
+      technologies:
+        type: "array"
+        items:
+          $ref: "#/definitions/Technology"
+      instance:
+          $ref: "#/definitions/Instance"
+  Pipeline:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      pipelineName:
+        type: "string"
+      uploadedProject:
+        type: "string"
+      creationDate:
+        type: "string"
+      estimatedCost:
+        type: "string"
+      technologies:
+        type: "array"
+        items:
+          $ref: "#/definitions/Technology"
+      pipelineDetails:
+        $ref: "#/definitions/PipelineDetails"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
